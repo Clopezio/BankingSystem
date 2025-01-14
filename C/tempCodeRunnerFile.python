@@ -1,0 +1,12 @@
+print("benvenuto in calcolatrice!")
+numero1 = int(input("inserisci il primo numero: "))
+numero2 = int(input("inserisci il secondo numero: "))
+operatore = input("inserisci l'operatore: ")
+if operatore == "+":
+    print(numero1 + numero2) 
+elif operatore == "-":
+    print(numero1 - numero2)
+elif operatore == "*":
+    print(numero1 * numero2)
+elif operatore == "/:":
+    print(numero1 / numero2)

@@ -4,6 +4,7 @@
 
 #define DECK_SIZE 52
 #define HAND_SIZE 11
+#define START_MONEY 100
 
 typedef struct {
     char *face;
@@ -29,6 +30,35 @@ void addCardToHand(Hand *hand, Card card);
 void printHand(Hand *hand, int hideFirstCard);
 int calculateHandTotal(Hand *hand);
 
+/**
+ * Questa funzione legge il valore dei soldi salvato in memoria. Qualora il file non esista, lo crea e scrive il valore di default
+ * contenuto nella macro START_MONEY. Se il file esiste, legge il valore e lo salva nella variabile money.
+ * 
+ * @param money Puntatore alla variabile in cui salvare il valore dei soldi
+ * @return 1 se tutto è andato a buon fine, errore + 0 altrimenti
+ */
+int loadMoney(int *money) {
+    // Apre e, nel caso, crea il file
+    FILE *file = fopen("money.txt", "ab+");
+
+    // Prova ad aprire il file
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return 0;
+    }
+
+    // Se funziona, legge il contenuto del file. Se non c'è niente, scrive il valore di default
+    if (fscanf(file, "%d", money) == EOF) {
+        // Scrive nel file il valore di default
+        fprintf(file, "%d", START_MONEY);
+        *money = START_MONEY;
+    }
+
+    // Chiude il file e ritorna 1 (tutto ok)
+    fclose(file);
+    return 1;
+}
+
 int main() {
     printf("Welcome to Blackjack! this game was made by ClopeziohH,\n");
     printf("You start with 100 money. You can bet any amount of money you have.\n");
@@ -43,6 +73,9 @@ int main() {
     int bet;
 
     srand(time(NULL));
+
+    // Carica i soldi nella variabile MONEY
+    loadMoney(&money);
    
     while (money > 0) {
         printf("You have %d money. How much do you want to bet? ", money);
@@ -154,7 +187,6 @@ void addCardToHand(Hand *hand, Card card) {
     hand->cards[hand->count++] = card;
     hand->total += card.value;
 }
-
 void printHand(Hand *hand, int hideFirstCard) {
     for (int i = 0; i < hand->count; i++) {
         if (i == 0 && hideFirstCard) {
